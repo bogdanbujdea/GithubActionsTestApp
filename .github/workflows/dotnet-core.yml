@@ -2,6 +2,7 @@ name: .NET Core
 
 env:
   IMAGE_NAME: githubactionstestapp
+  CREATE_PACKAGES: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
 on:
   push:
     branches: [ master ]
@@ -30,11 +31,13 @@ jobs:
           --tag $IMAGE_NAME:$GITHUB_SHA \
           --file GithubActionsTestApp/Dockerfile
     - name: Save Docker image
+      if: ${{ env.CREATE_PACKAGES }}
       run: |
         docker save \
-          -o githubactionstestapp.tar $IMAGE_NAME:$GITHUB_SHA          
+          -o ${{ env.IMAGE_NAME }}.tar $IMAGE_NAME:$GITHUB_SHA          
     - name: Upload tar artifact
+      if: ${{ env.CREATE_PACKAGES }}
       uses: actions/upload-artifact@v2
       with:
-        name: $IMAGE_NAME
-        path: githubactionstestapp.tar
+        name: image
+        path: ${{ env.IMAGE_NAME }}.tar
