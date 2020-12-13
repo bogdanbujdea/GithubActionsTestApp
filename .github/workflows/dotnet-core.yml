@@ -11,7 +11,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
+    env:
+      CREATE_PACKAGES: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
     steps:
     - uses: actions/checkout@v2
     - name: Setup .NET Core
@@ -24,18 +25,18 @@ jobs:
       run: dotnet build --configuration Release --no-restore
     - name: Test
       run: dotnet test --no-restore --verbosity normal
-    - if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
+    - if: ${{ env.CREATE_PACKAGES }}
       name: Build Docker image
       run: |
         docker build . \
           --tag $IMAGE_NAME:$GITHUB_SHA \
           --file GithubActionsTestApp/Dockerfile
-    - if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
+    - if: ${{ env.CREATE_PACKAGES }}
       name: Save Docker image
       run: |
         docker save \
           -o ${{ env.IMAGE_NAME }}.tar $IMAGE_NAME:$GITHUB_SHA          
-    - if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
+    - if: ${{ env.CREATE_PACKAGES }}
       name: Upload tar artifact
       uses: actions/upload-artifact@v2
       with:
