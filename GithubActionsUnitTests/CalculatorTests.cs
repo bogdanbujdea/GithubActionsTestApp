@@ -10,7 +10,7 @@ namespace GithubActionsUnitTests
         [Fact]
         public void AddShouldReturnSum()
         {
-            Calculator.Add(1, 2).Should().Be(3);
+            Calculator.Add(1, 2).Should().Be(4);
         }
     }
 }
