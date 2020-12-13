@@ -25,14 +25,14 @@ jobs:
       run: dotnet test --no-restore --verbosity normal
     - if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
       name: Create and save Docker image
-      uses: actions/upload-artifact@v2
-      with:
-        name: image
-        path: ${{ env.IMAGE_NAME }}.tar
       run: |
         docker build . \
           --tag $IMAGE_NAME:$GITHUB_SHA \
           --file GithubActionsTestApp/Dockerfile
         docker save \
           -o ${{ env.IMAGE_NAME }}.tar $IMAGE_NAME:$GITHUB_SHA   
-      
+      name: Create Docker image artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: image
+        path: ${{ env.IMAGE_NAME }}.tar
