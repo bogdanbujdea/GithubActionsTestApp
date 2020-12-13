@@ -24,7 +24,8 @@ jobs:
       run: dotnet build --configuration Release --no-restore
     - name: Test
       run: dotnet test --no-restore --verbosity normal
-    - name: Build Docker image
+    - if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
+      name: Build Docker image
       run: |
         docker build . \
           --tag $IMAGE_NAME:$GITHUB_SHA \
