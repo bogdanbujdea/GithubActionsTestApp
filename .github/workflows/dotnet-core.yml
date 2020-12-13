@@ -18,6 +18,10 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 3.1.301
+    - name: Install dependencies
+      run: dotnet restore
+    - name: Build
+      run: dotnet build --configuration Release --no-restore
     - name: Test
       run: dotnet test --no-restore --verbosity normal
     - name: Build Docker image
@@ -28,9 +32,9 @@ jobs:
     - name: Save Docker image
       run: |
         docker save \
-          -o $IMAGE_NAME.tar $IMAGE_NAME:$GITHUB_SHA          
+          -o githubactionstestapp.tar $IMAGE_NAME:$GITHUB_SHA          
     - name: Upload tar artifact
       uses: actions/upload-artifact@v2
       with:
         name: $IMAGE_NAME
-        path: $IMAGE_NAME.tar
+        path: githubactionstestapp.tar
