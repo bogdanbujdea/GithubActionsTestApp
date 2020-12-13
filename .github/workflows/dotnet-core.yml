@@ -10,7 +10,6 @@ on:
 
 jobs:
   build:
-    name: Build API container
     runs-on: ubuntu-latest
 
     steps:
